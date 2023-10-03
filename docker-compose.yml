@@ -1,0 +1,36 @@
+services:
+  php-apache:
+    container_name: php-apache
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    volumes:
+      - .:/var/www/html/
+    ports:
+      - 8000:80
+    networks:
+      - giusoft
+  db:
+    container_name: db
+    image: mysql
+    restart: always
+    volumes:
+      - 'db_data:/var/lib/mysql'
+    environment:
+        MYSQL_ROOT_PASSWORD: MYSQL_ROOT_PASSWORD
+        MYSQL_DATABASE: MY_DATABASE
+        MYSQL_USER: MYSQL_USER
+        MYSQL_PASSWORD: MYSQL_PASSWORD
+    ports:
+      - "9906:3306"
+    networks:
+      - giusoft
+
+networks:
+  giusoft:
+    driver: bridge
+volumes:
+  db_data: 
+    driver: local
