@@ -7,30 +7,19 @@ require __DIR__.'/../../vendor/autoload.php';
 use App\Database\Database;
 use \PDO;
 
-class User
+class Address
 {
-    CONST TABLE_NAME = 'users';
-    protected $id;
-    protected $name;
-    protected $cpf;
-    protected $sex;
-    protected $active;
-    protected $created_at;
-    protected $updated_at;
+    CONST TABLE_NAME = 'addresses';
+    protected $logradouro;
+    protected $bairro;
+    protected $cep;
+    protected $user_id;
 
     public static function find($id)
     {
         $database = new Database(self::TABLE_NAME);
         $result = $database->select('id = '.$id)
                             ->fetchObject(self::class);
-        return $result;
-    }
-
-    public static function findOne($id)
-    {
-        $database = new Database(self::TABLE_NAME);
-        $result = $database->select('users.id = '.$id)
-                            ->fetchObject();
 
         return $result;
     }
@@ -47,9 +36,10 @@ class User
     {
         $database = new Database(self::TABLE_NAME);
         $result = $database->insert([
-            'name' => $this->getName(),
-            'cpf' => $this->getCpf(),
-            'sex' => $this->getSex(),
+            'logradouro' => $this->getLogradouro(),
+            'bairro' => $this->getBairro(),
+            'cep' => $this->getCep(),
+            'user_id' => $this->getUserId(),
         ]);
 
         return $result;
@@ -59,9 +49,10 @@ class User
     {
         $database = new Database(self::TABLE_NAME);
         $result = $database->update('id = '.$this->id,[
-            'name' => $this->getName(),
-            'cpf' => $this->getCpf(),
-            'sex' => $this->getSex(),
+            'logradouro' => $this->getLogradouro(),
+            'bairro' => $this->getBairro(),
+            'cep' => $this->getCep(),
+            'user_id' => $this->getUserId(),
         ]);
 
         return $result;
@@ -74,33 +65,43 @@ class User
         return $result;
     }
 
-    public function setName($name)
+    public function setLogradouro($logradouro)
     {
-        $this->name = $name;
+        $this->logradouro = $logradouro;
     }
     
-    public function setCpf($cpf)
+    public function setBairro($bairro)
     {
-        $this->cpf = $cpf;
+        $this->bairro = $bairro;
     }
 
-    public function setSex($sex)
+    public function setCep($cep)
     {
-        $this->sex = $sex;
+        $this->cep = preg_replace("/[^0-9]/", '', $cep);
     }
 
-    public function getName()
+    public function setUserId($userId)
     {
-        return $this->name;
+        $this->user_id = $userId;
+    }
+
+    public function getLogradouro()
+    {
+        return $this->logradouro;
     }
     
-    public function getCpf()
+    public function getBairro()
     {
-        return $this->cpf;
+        return $this->bairro;
     }
     
-    public function getSex()
+    public function getCep()
     {
-        return $this->sex;
+        return $this->cep;
+    }
+
+    public function getUserId()
+    {
+        return $this->user_id;
     }
 }

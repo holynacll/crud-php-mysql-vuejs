@@ -4,6 +4,5 @@ require __DIR__.'/../../../vendor/autoload.php';
 
 use \App\Services\UserService;
 
-$user = UserService::create($_POST);
-header('location: index.php?status=success');
-exit;
+$userId = UserService::create($_POST);
+echo json_encode(['userId' => $userId]);

@@ -1,12 +1,19 @@
 <div id="app">
-  <div class="flex p-2 items-center w-full space-x-3">
-    Manage Users
+  <input hidden id="userId" value="<?php echo $_GET['id']; ?>">
+  <div class="flex p-2 mb-12 items-center w-full space-x-3">
+    <a
+      class="bg-sky-500 text-white active:bg-sky-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+      href="../../index.php"
+    >
+    HOME
+    </a>
+   <h2 class="text-xl">Manage Address From {{ user.name }}</h2>
   </div>
  
   <div>
     <button class="bg-pink-500 text-white active:bg-pink-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button" 
-      v-on:click="openModalNewUser()">
-      Add New User
+      v-on:click="openModalNewAddress()">
+      Add New Address
     </button>
     <div v-if="showModal" class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex">
       <div class="relative w-auto my-6 mx-auto max-w-3xl">
@@ -24,23 +31,19 @@
             </button>
           </div>
           <!--body-->
-          <form action="../../app/Actions/User/StoreUserAction.php" @submit.prevent="modal.action">
+          <form action="../../app/Actions/User/StoreAddressAction.php" @submit.prevent="modal.action">
             <div class="relative p-6 flex-auto">
               <div>
-                <label for="name">Name:</label>
-                <input v-model="user.name"class="p-2 m-2 border border-gray-600 rounded-lg" name="name" type="text">
+                <label for="logradouro">Logradouro:</label>
+                <input v-model="address.logradouro"class="p-2 m-2 border border-gray-600 rounded-lg" name="logradouro" type="text">
               </div>
               <div>
-                <label for="cpf">CPF:</label>
-                <input v-model="user.cpf" class="p-2 m-2 border border-gray-600 rounded-lg" name="cpf" type="text">
+                <label for="bairro">Bairro:</label>
+                <input v-model="address.bairro" class="p-2 m-2 border border-gray-600 rounded-lg" name="bairro" type="text">
               </div>
               <div>
-                <label for="sex">Sex</label>
-                <select v-model="user.sex" class="p-2 m-2 border border-gray-600 rounded-lg" name="sex">
-                  <option value="" disabled selected>Selecione</option>
-                  <option value="0">Feminino</option>
-                  <option value="1">Masculino</option>
-                </select>
+                <label for="cep">CEP:</label>
+                <input v-model="address.cep" class="p-2 m-2 border border-gray-600 rounded-lg" name="cep" type="text">
               </div>
             </div>
             <!--footer-->
@@ -66,12 +69,9 @@
   <table class="table-auto w-full text-center text-sm font-light">
       <thead>
         <tr class="border-b font-medium dark:border-neutral-500 dark:text-neutral-800">
-          <th scope="col" class="px-6 py-4">Nome</th>
-          <th scope="col" class="px-6 py-4">CPF</th>
-          <th scope="col" class="px-6 py-4">Sexo</th>
-          <th scope="col" class="px-6 py-4">CEP</th>
           <th scope="col" class="px-6 py-4">Logradouro</th>
           <th scope="col" class="px-6 py-4">Bairro</th>
+          <th scope="col" class="px-6 py-4">CEP</th>
           <th scope="col" class="px-6 py-4">Cadastrado Em</th>
           <th scope="col" class="px-6 py-4">Status</th>
           <th scope="col" class="px-6 py-4">Actions</th>
@@ -80,34 +80,24 @@
       <tbody class="border-b bg-gray-50 dark:border-neutral-500">
         <tr
           class="hover:bg-gray-200"
-          v-for="user in users"
-          :key="user.id"
+          v-for="address in addresses"
+          :key="address.id"
         >
           <!-- <td class="whitespace-nowrap px-6 py-4 font-medium">{{ showEvent.id }}</td> -->
-          <td class="px-6 py-4">{{ user.name }}</td>
-          <td class="px-6 py-4">{{ user.cpf }}</td>
-          <td class="px-6 py-4">{{ user.sex ? 'Masculino' : 'Feminino' }}</td>
-          <td class="px-6 py-4">{{ user.cep ?? '-' }}</td>
-          <td class="px-6 py-4">{{ user.logradouro ?? '-' }}</td>
-          <td class="px-6 py-4">{{ user.bairro ?? '-' }}</td>
-          <td class="px-6 py-4">{{ user.created_at }}</td>
-          <td class="px-6 py-4">{{ user.active ? 'active' : 'inactive' }}</td>
+          <td class="px-6 py-4">{{ address.logradouro }}</td>
+          <td class="px-6 py-4">{{ address.bairro }}</td>
+          <td class="px-6 py-4">{{ address.cep }}</td>
+          <td class="px-6 py-4">{{ address.created_at }}</td>
+          <td class="px-6 py-4">{{ address.active ? 'active' : 'inactive' }}</td>
           <td class="whitespace-nowrap px-6 py-4 space-x-3">
-            
-            <a
-              :href=`address.php?id=${user.id}`
-              class="bg-sky-800 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded inline-flex items-center"
-            >
-              Manage Address
-            </a>
             <button
-              @click="openModalEditUser(user)"
+              @click="openModalEditAddress(address)"
               class="bg-green-800 hover:bg-green-700 text-white font-bold py-2 px-4 rounded inline-flex items-center"
             >
               Edit
             </button>
             <button
-              @click="deleteUser(user.id)"
+              @click="deleteAddress(address.id)"
               class="bg-red-800 hover:bg-red-700 text-white font-bold py-2 px-4 rounded inline-flex items-center"
             >
               Delete
@@ -125,8 +115,15 @@ const { createApp, ref, onMounted } = Vue
 createApp({
   setup() {
   const showModal = ref(false)
-  const users = ref({});
+  const addresses = ref({});
+  const address = ref({
+    logradouro: '',
+    bairro: '',
+    cep: '',
+    user_id: '',
+  })
   const user = ref({
+    id: '',
     name: '',
     cpf: '',
     sex: ''
@@ -136,35 +133,37 @@ createApp({
     action: '',
     description: '',
   })
-  const urlStore = "../../app/Actions/User/StoreUserAction.php"
-  const urlUpdate = "../../app/Actions/User/UpdateUserAction.php"
-  const urlDelete = "../../app/Actions/User/DeleteUserAction.php"
-  const urlGet = "../../app/Actions/User/GetUsersAction.php"
+  const urlStore = "../../app/Actions/Address/StoreAddressAction.php"
+  const urlUpdate = "../../app/Actions/Address/UpdateAddressAction.php"
+  const urlDelete = "../../app/Actions/Address/DeleteAddressAction.php"
+  const urlGet = "../../app/Actions/Address/GetAddressesByUserIdAction.php"
+  const urlGetUser = "../../app/Actions/User/GetUserByIdAction.php"
 
   const toggleModal = async () => showModal.value = !showModal.value
   
-  const openModalNewUser = () => {
-    modal.value.title = "New User"
-    modal.value.action = createUser
+  const openModalNewAddress = () => {
+    modal.value.title = "New Address"
+    modal.value.action = createAddress
     modal.value.description = "SAVE"
     toggleModal()
   }
-  const openModalEditUser = (u) => {
-    user.value = u
-    modal.value.title = `Edit User: ${user.value.name}`
-    modal.value.action = editUser
+  const openModalEditAddress = (a) => {
+    address.value = a
+    modal.value.title = `Edit Address: ${address.value.logradouro} - ${address.value.bairro}`
+    modal.value.action = editAddress
     modal.value.description = "UPDATE"
     toggleModal()
   }
 
-  const editUser = async () => {
+  const editAddress = async () => {
     if(!window.confirm('Are you sure?')) {
       return;
     }
+    address.value.user_id = user.value.id
     const data = {
-      'user': user.value
+      'address': address.value
     }
-    user.value = {}
+    address.value = {}
     try {
       const response = await fetch(urlUpdate, {
         method: "POST",
@@ -173,20 +172,20 @@ createApp({
           "Content-Type":  'application/x-www-form-urlencoded',
         }
       })
-      .then(() => getUsers())
+      .then(() => getAddressesByUserId())
       .then(() => toggleModal())
     } catch(error) {
       console.log(error) //doing something into msg flash
     }
   }
 
-  const deleteUser = async (userId) => {
+  const deleteAddress = async (addressId) => {
     if(!window.confirm('Are you sure?')) {
       return;
     }
     const data = {
-      user:{
-        id: userId
+      address:{
+        id: addressId
       } 
     }
     try {
@@ -197,17 +196,18 @@ createApp({
           "Content-Type":  'application/x-www-form-urlencoded',
         }
       })
-      .then(() => getUsers())
+      .then(() => getAddressesByUserId())
     } catch(error) {
       console.log(error) //doing something into msg flash
     }
   }
 
-  const createUser = async () => {
+  const createAddress = async () => {
+    address.value.user_id = user.value.id
     const data = {
-      'user': user.value
+      'address': address.value
     }
-    user.value = {}
+    address.value = {}
     try {
       const response = await fetch(urlStore, {
         method: "POST",
@@ -217,19 +217,33 @@ createApp({
         }
       })
       await response.json()
-        .then(() => getUsers())
+        .then(() => getAddressesByUserId())
         .then(() => toggleModal())
     } catch(error) {
       console.log(error) //doing something into msg flash
     }
   }
-
-
   
-  const getUsers = async () => {
+  const getAddressesByUserId = async () => {
+    const url = urlGet+'?id='+user.value.id
     try {
-      const response = await fetch(urlGet)
-      users.value = await response.json()
+      const response = await fetch(url)
+      const data = await response.json()
+      addresses.value = data.addresses
+      // console.log(await response.json()) // doing something into msg flash
+    } catch(error) {
+      console.log(error) //doing something into msg flash
+    }
+  }
+
+  const initUser = async () => {
+    const e = document.getElementById("userId")
+    const id = e.value
+    try {
+      const response = await fetch(urlGetUser+'?id='+id)
+      // console.log(await response.json())
+      const data = await response.json()
+      user.value = data.user
       // console.log(await response.json()) // doing something into msg flash
     } catch(error) {
       console.log(error) //doing something into msg flash
@@ -237,17 +251,19 @@ createApp({
   }
 
   onMounted(() => {
-    getUsers()
+    initUser()
+      .then(() => getAddressesByUserId())
   })
   return {
     showModal,
     toggleModal,
-    openModalNewUser,
-    openModalEditUser,
+    openModalNewAddress,
+    openModalEditAddress,
     modal,
-    users,
+    address,
+    addresses,
     user,
-    deleteUser,
+    deleteAddress,
   }
   }
 }).mount('#app')
