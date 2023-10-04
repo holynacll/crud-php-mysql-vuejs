@@ -45,6 +45,11 @@
                 <label for="cep">CEP:</label>
                 <input v-model="address.cep" class="p-2 m-2 border border-gray-600 rounded-lg" name="cep" type="text">
               </div>
+              <select v-model="address.active" class="p-2 m-2 border border-gray-600 rounded-lg" name="active">
+                <option value="" disabled selected>Selecione</option>
+                <option value="0">inactive</option>
+                <option value="1">Active</option>
+              </select>
             </div>
             <!--footer-->
             <div class="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
@@ -121,6 +126,7 @@ createApp({
     bairro: '',
     cep: '',
     user_id: '',
+    active: 1,
   })
   const user = ref({
     id: '',
@@ -139,7 +145,10 @@ createApp({
   const urlGet = "../../app/Actions/Address/GetAddressesByUserIdAction.php"
   const urlGetUser = "../../app/Actions/User/GetUserByIdAction.php"
 
-  const toggleModal = async () => showModal.value = !showModal.value
+  const toggleModal = async () => {
+    showModal.value = !showModal.value
+    if(!showModal.value) resetAddress()
+  }
   
   const openModalNewAddress = () => {
     modal.value.title = "New Address"
@@ -163,7 +172,7 @@ createApp({
     const data = {
       'address': address.value
     }
-    address.value = {}
+    resetAddress()
     try {
       const response = await fetch(urlUpdate, {
         method: "POST",
@@ -207,7 +216,7 @@ createApp({
     const data = {
       'address': address.value
     }
-    address.value = {}
+    resetAddress()
     try {
       const response = await fetch(urlStore, {
         method: "POST",
@@ -223,6 +232,8 @@ createApp({
       console.log(error) //doing something into msg flash
     }
   }
+
+  const resetAddress = () => address.value = {'active': 1}
   
   const getAddressesByUserId = async () => {
     const url = urlGet+'?id='+user.value.id

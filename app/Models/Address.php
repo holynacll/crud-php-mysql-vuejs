@@ -13,6 +13,7 @@ class Address
     protected $logradouro;
     protected $bairro;
     protected $cep;
+    protected $active;
     protected $user_id;
 
     public static function find($id)
@@ -39,20 +40,32 @@ class Address
             'logradouro' => $this->getLogradouro(),
             'bairro' => $this->getBairro(),
             'cep' => $this->getCep(),
+            'active' => $this->getActive(),
             'user_id' => $this->getUserId(),
         ]);
 
         return $result;
     }
 
-    public function update()
+    public function update($where = null)
     {
         $database = new Database(self::TABLE_NAME);
-        $result = $database->update('id = '.$this->id,[
+        $result = $database->update($where, [
             'logradouro' => $this->getLogradouro(),
             'bairro' => $this->getBairro(),
             'cep' => $this->getCep(),
+            'active' => $this->getActive(),
             'user_id' => $this->getUserId(),
+        ]);
+
+        return $result;
+    }
+
+    public function updateInactiveAddresses($where = null)
+    {
+        $database = new Database(self::TABLE_NAME);
+        $result = $database->update($where, [
+            'active' => 0,
         ]);
 
         return $result;
@@ -85,6 +98,11 @@ class Address
         $this->user_id = $userId;
     }
 
+    public function setActive($active)
+    {
+        $this->active = $active;
+    }
+
     public function getLogradouro()
     {
         return $this->logradouro;
@@ -103,5 +121,10 @@ class Address
     public function getUserId()
     {
         return $this->user_id;
+    }
+
+    public function getActive()
+    {
+        return $this->active;
     }
 }
