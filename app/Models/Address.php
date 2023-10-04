@@ -61,6 +61,9 @@ class Address
         return $result;
     }
 
+    /**
+     * Atualiza os demais endereços do usuario para inativo, exceto o ultimo ativado
+     */
     public function updateInactiveAddresses($where = null)
     {
         $database = new Database(self::TABLE_NAME);
